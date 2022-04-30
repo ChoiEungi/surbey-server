@@ -28,6 +28,6 @@ public class SurveyResponse {
     }
 
     public static SurveyResponse of(Survey survey) {
-         return new SurveyResponse(survey.getId(), survey.getTitle(), survey.getPurpose(), survey.getStartDate(), survey.getEndDate());
+        return new SurveyResponse(survey.getId(), survey.getTitle(), survey.getPurpose(), survey.getStartDate(), survey.getEndDate());
     }
 }

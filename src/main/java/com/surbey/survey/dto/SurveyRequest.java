@@ -15,5 +15,4 @@ public class SurveyRequest {
     private Instant startDate;
     private Instant endDate;
     private String password;
-
 }
