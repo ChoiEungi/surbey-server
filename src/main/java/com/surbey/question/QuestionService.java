@@ -16,14 +16,19 @@ public class QuestionService {
 
     @Transactional
     public List<Question> findQuestionsById(UUID uuid) {
-        List<Question> questionBySurveyId = questionRepository.findQuestionBySurveyId(uuid);
-        return questionBySurveyId;
+        List<Question> questions = questionRepository.findQuestionBySurveyId(uuid);
+        return questions;
     }
 
-
+    @Transactional
     public Long createQuestion() {
         return 1L;
+    }
 
+    @Transactional
+    public void updateMainQuestion(String mainQuestion, Long questionId) {
+        Question question = questionRepository.findById(questionId).orElseThrow(IllegalArgumentException::new);
+        question.setQuestion(mainQuestion);
     }
 
 

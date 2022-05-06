@@ -43,4 +43,8 @@ public class Question {
         this.questionOrder = questionOrder;
         this.survey = survey;
     }
+
+    public void setQuestion(String mainQuestion) {
+        this.question = mainQuestion;
+    }
 }

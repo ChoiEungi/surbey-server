@@ -25,3 +25,7 @@ logging:
         type:
           descriptor:
             sql: trace
+
+swagger:
+  host: localhost:8080
+  protocol: http
