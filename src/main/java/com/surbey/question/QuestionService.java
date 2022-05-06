@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +34,16 @@ public class QuestionService {
     }
 
     @Transactional
+    public List<Long> createQuestions(List<QuestionRequest> requests) {
+        Survey survey = surveyRepository.findById(requests.get(0).getSurveyId()).orElseThrow(IllegalArgumentException::new);
+        List<Long> resultsId = requests.stream()
+                .map(s -> questionRepository.save(new Question(s.getQuestionContent(), s.getLeftQuestion(), s.getRightQuestion(),
+                        s.getTime(), s.getQuestionOrder(), survey)).getId())
+                .collect(Collectors.toList());
+        return resultsId;
+    }
+
+    @Transactional
     public void updateMainQuestion(String questionContent, Long questionId) {
         Question question = questionRepository.findById(questionId).orElseThrow(IllegalArgumentException::new);
         question.setQuestionContent(questionContent);
@@ -43,7 +54,6 @@ public class QuestionService {
         Question question = questionRepository.findById(questionId).orElseThrow(IllegalArgumentException::new);
         questionRepository.delete(question);
     }
-
 
 
 }
