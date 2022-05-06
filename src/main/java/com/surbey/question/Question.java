@@ -17,7 +17,7 @@ public class Question {
     private Long id;
 
     @Lob
-    private String question;
+    private String questionContent;
 
     private String leftQuestion;
 
@@ -30,13 +30,13 @@ public class Question {
     @ManyToOne(fetch = FetchType.LAZY)
     private Survey survey;
 
-    public Question(String question, String leftQuestion, String rightQuestion, int time, int questionOrder, Survey survey) {
-        this(null, question, leftQuestion, rightQuestion, time, questionOrder, survey);
+    public Question(String questionContent, String leftQuestion, String rightQuestion, int time, int questionOrder, Survey survey) {
+        this(null, questionContent, leftQuestion, rightQuestion, time, questionOrder, survey);
     }
 
-    private Question(Long id, String question, String leftQuestion, String rightQuestion, int time, int questionOrder, Survey survey) {
+    private Question(Long id, String questionContent, String leftQuestion, String rightQuestion, int time, int questionOrder, Survey survey) {
         this.id = id;
-        this.question = question;
+        this.questionContent = questionContent;
         this.leftQuestion = leftQuestion;
         this.rightQuestion = rightQuestion;
         this.time = time;
@@ -44,7 +44,7 @@ public class Question {
         this.survey = survey;
     }
 
-    public void setQuestion(String mainQuestion) {
-        this.question = mainQuestion;
+    public void setQuestionContent(String mainQuestion) {
+        this.questionContent = mainQuestion;
     }
 }
