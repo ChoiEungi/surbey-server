@@ -3,7 +3,6 @@ package com.surbey.question;
 import com.surbey.question.dto.QuestionRequest;
 import com.surbey.survey.Survey;
 import com.surbey.survey.SurveyRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,8 +43,14 @@ class QuestionServiceTest {
 
     @Test
     void findQuestionsById() {
+        Survey survey = surveyRepository.save(new Survey("title", "purpose", Instant.now(), Instant.now().plusSeconds(100L), "pw"));
+        for (int i = 1; i <= 3; i++) {
+            questionRepository.save(new Question("question", "yes", "no", 10, i, survey));
+        }
+
         List<Question> questions = questionService.findQuestionsById(survey.getId());
-        assertThat(questions.size()).isEqualTo(1);
+        System.out.println(questions);
+        assertThat(questions.size()).isEqualTo(3);
     }
 
     @Test
@@ -64,7 +69,7 @@ class QuestionServiceTest {
     }
 
     @Test
-    void deleteQuestionTest(){
+    void deleteQuestionTest() {
         Long questionId = questionRepository.save(QUESTION).getId();
         questionService.deleteMainQuestion(questionId);
         assertThatThrownBy(() -> questionRepository.findById(questionId).orElseThrow(IllegalArgumentException::new)).isInstanceOf(IllegalArgumentException.class);
