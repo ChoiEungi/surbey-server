@@ -31,6 +31,7 @@ public class Survey {
 
     private String password;
 
+
     public Survey(String title, String purpose, Instant startDate, Instant endDate, String password) {
         this(null, title, purpose, startDate, endDate, password);
     }
