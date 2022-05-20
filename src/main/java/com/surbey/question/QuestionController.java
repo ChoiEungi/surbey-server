@@ -23,8 +23,8 @@ public class QuestionController {
 
     @PostMapping("survey/{id}/question")
     public ResponseEntity<Void> createQuestion(@PathVariable UUID id, @RequestBody QuestionRequest questionRequest) {
-
-        return ResponseEntity.created(URI.create("/survey/" + id + "/questions")).build();
+        Long questionId = questionService.createQuestion(questionRequest);
+        return ResponseEntity.created(URI.create("/survey/" + id + "/questions/" + questionId)).build();
     }
 
     @GetMapping("/survey/{id}/questions")
