@@ -20,7 +20,7 @@ public class SurveyController {
     @PostMapping("")
     public ResponseEntity<Void> createSurvey(@RequestBody SurveyRequest request){
         UUID survey = surveyServices.createSurvey(request);
-        return ResponseEntity.created(URI.create("/surveys" + survey)).build();
+        return ResponseEntity.created(URI.create("/surveys/" + survey)).build();
     }
 
     @GetMapping("")
