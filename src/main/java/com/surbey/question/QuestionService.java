@@ -19,10 +19,16 @@ public class QuestionService {
     private final SurveyRepository surveyRepository;
 
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<Question> findQuestionsById(UUID uuid) {
         List<Question> questions = questionRepository.findQuestionBySurveyId(uuid);
         return questions;
+    }
+
+    @Transactional(readOnly = true)
+    public Question findOneQuestions(UUID uuid, Long questionId) {
+        Question question = questionRepository.findQuestionBySurveyIdAndId(uuid, questionId).orElseThrow(IllegalArgumentException::new);
+        return question;
     }
 
     @Transactional
