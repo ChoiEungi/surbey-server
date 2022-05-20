@@ -15,9 +15,9 @@ import java.util.Collections;
 @Configuration
 public class SwaggerConfig {
 
-    @Value("${swagger.host:localhost:8080}")
+    @Value("${swagger.host:api.surbey.kro.kr}")
     private String host;
-    @Value("${swagger.protocol:http}")
+    @Value("${swagger.protocol:https}")
     private String protocol;
 
     @Bean
