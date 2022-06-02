@@ -3,6 +3,9 @@ package com.surbey.question;
 import com.surbey.answer.AnswerRepository;
 import com.surbey.question.dto.QuestionRequest;
 import com.surbey.question.dto.QuestionResponse;
+import com.surbey.question.dto.SentimentQuestionResponse;
+import com.surbey.question.dto.SentimentQuestionResponse.Document;
+import com.surbey.question.infra.SentimentVerifier;
 import com.surbey.survey.Survey;
 import com.surbey.survey.SurveyRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +24,7 @@ public class QuestionService {
     private final QuestionRepository questionRepository;
     private final SurveyRepository surveyRepository;
     private final AnswerRepository answerRepository;
+    private final SentimentVerifier sentimentVerifier;
 
 
     @Transactional(readOnly = true)
@@ -42,7 +46,7 @@ public class QuestionService {
         Question question = new Question(request.getQuestionContent(), request.getTime(), request.getQuestionOrder(), survey);
         question.addAnswer(request.getAnswer());
         Question savedQuestion = questionRepository.save(question);
-//        answerRepository.saveAll(request.getAnswer());
+        answerRepository.saveAll(request.getAnswer());
 
         return savedQuestion.getId();
     }
@@ -61,6 +65,15 @@ public class QuestionService {
         List<Question> savedQuestions = questions.stream().map(s -> questionRepository.save(s)).collect(Collectors.toList());
 
         return savedQuestions.stream().map(Question::getId).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public SentimentQuestionResponse getSentimentList(QuestionRequest request){
+        Document sentimentResult = sentimentVerifier.getSentimentResult(request.getQuestionContent());
+
+        SentimentQuestionResponse sentimentQuestionResponse = new SentimentQuestionResponse(request.getQuestionContent(), request.getTime(), request.getQuestionOrder(), sentimentResult.getSentiment(), sentimentResult.getConfidence());
+        sentimentQuestionResponse.getAnswerQuestion().addAll(request.getAnswer().stream().map(s -> s.getAnswerQuestion()).collect(Collectors.toList()));
+        return sentimentQuestionResponse;
     }
 
     @Transactional

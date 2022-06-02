@@ -4,6 +4,7 @@ import com.surbey.answer.Answer;
 import com.surbey.answer.AnswerRepository;
 import com.surbey.question.dto.QuestionRequest;
 import com.surbey.question.dto.QuestionResponse;
+import com.surbey.question.dto.SentimentQuestionResponse;
 import com.surbey.survey.Survey;
 import com.surbey.survey.SurveyRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -98,6 +99,12 @@ class QuestionServiceTest {
     }
 
     @Test
+    void sentimentQuestionTest(){
+        SentimentQuestionResponse sentimentList = questionService.getSentimentList(QUESTION_REQUEST);
+        System.out.println(sentimentList.toString());
+    }
+
+    @Test
     void findAllQuestionTests() {
 
         for (int i = 0; i < 3; i++) {
@@ -128,7 +135,7 @@ class QuestionServiceTest {
 
     @Test
     void deleteQuestionTest() {
-        Long questionId = questionService.createQuestion(QUESTION_REQUEST);
+        Long questionId = questionService.createQuestion(new QuestionRequest("content", new ArrayList<>(), 1, 1, survey.getId()));
         questionService.deleteMainQuestion(questionId);
         assertThatThrownBy(() -> questionRepository.findById(questionId).orElseThrow(IllegalArgumentException::new)).isInstanceOf(IllegalArgumentException.class);
     }

@@ -26,7 +26,7 @@ public class Question {
 
     private int questionOrder;
 
-    @OneToMany(mappedBy = "question", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
     private final List<Answer> answerList = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)

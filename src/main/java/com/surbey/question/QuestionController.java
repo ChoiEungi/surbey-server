@@ -2,6 +2,7 @@ package com.surbey.question;
 
 import com.surbey.question.dto.QuestionRequest;
 import com.surbey.question.dto.QuestionResponse;
+import com.surbey.question.dto.SentimentQuestionResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +39,12 @@ public class QuestionController {
     public ResponseEntity<QuestionResponse> retrieveSurveyQuestion(@PathVariable UUID id, @PathVariable Long questionId) {
         QuestionResponse question = questionService.findOneQuestions(id, questionId);
         return ResponseEntity.ok(question);
+    }
+
+    @PutMapping("/survey/{id}/questions/analysis/{questionId}")
+    public ResponseEntity<SentimentQuestionResponse> retrieveSentimentQuestion(@PathVariable UUID id, @PathVariable Long questionId, @RequestBody QuestionRequest questionRequest){
+        SentimentQuestionResponse sentimentQuestionResponse = questionService.getSentimentList(questionRequest);
+        return ResponseEntity.ok(sentimentQuestionResponse);
     }
 
 
