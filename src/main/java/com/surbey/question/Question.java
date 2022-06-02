@@ -1,11 +1,14 @@
 package com.surbey.question;
 
+import com.surbey.answer.Answer;
 import com.surbey.survey.Survey;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -19,26 +22,23 @@ public class Question {
     @Lob
     private String questionContent;
 
-    private String leftQuestion;
-
-    private String rightQuestion;
-
     private int time;
 
     private int questionOrder;
 
+    @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
+    private final List<Answer> answerList = new ArrayList<>();
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Survey survey;
 
-    public Question(String questionContent, String leftQuestion, String rightQuestion, int time, int questionOrder, Survey survey) {
-        this(null, questionContent, leftQuestion, rightQuestion, time, questionOrder, survey);
+    public Question(String questionContent, int time, int questionOrder, Survey survey) {
+        this(null, questionContent, time, questionOrder, survey);
     }
 
-    private Question(Long id, String questionContent, String leftQuestion, String rightQuestion, int time, int questionOrder, Survey survey) {
+    private Question(Long id, String questionContent, int time, int questionOrder, Survey survey) {
         this.id = id;
         this.questionContent = questionContent;
-        this.leftQuestion = leftQuestion;
-        this.rightQuestion = rightQuestion;
         this.time = time;
         this.questionOrder = questionOrder;
         this.survey = survey;
@@ -46,5 +46,10 @@ public class Question {
 
     public void setQuestionContent(String mainQuestion) {
         this.questionContent = mainQuestion;
+    }
+
+    public void addAnswer(List<Answer> answerList) {
+        answerList.forEach(s -> s.setQuestion(this));
+        this.answerList.addAll(answerList);
     }
 }

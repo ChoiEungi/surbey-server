@@ -1,14 +1,20 @@
 package com.surbey.question;
 
+import com.surbey.answer.Answer;
+import com.surbey.answer.AnswerRepository;
 import com.surbey.question.dto.QuestionRequest;
+import com.surbey.question.dto.QuestionResponse;
+import com.surbey.question.dto.SentimentQuestionResponse;
 import com.surbey.survey.Survey;
 import com.surbey.survey.SurveyRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,32 +32,53 @@ class QuestionServiceTest {
     @Autowired
     private QuestionRepository questionRepository;
 
-    private Question questionSample;
+    @Autowired
+    private AnswerRepository answerRepository;
+
     public QuestionRequest QUESTION_REQUEST;
+    public List<Answer> answerList = new ArrayList<>();
     private Survey survey;
 
     public static final Survey SURVEY = new Survey("title", "purpose", Instant.now(), Instant.now().plusSeconds(100L), "pw");
-    public static final Question QUESTION = new Question("question", "yes", "no", 10, 1, SURVEY);
+    public static final Question QUESTION = new Question("question", 10, 1, SURVEY);
 
 
     @BeforeEach
     void setup() {
         survey = surveyRepository.save(SURVEY);
-        questionSample = questionRepository.save(QUESTION);
-        QUESTION_REQUEST = new QuestionRequest("content", "yes", "no", 10, 2, survey.getId());
+        answerList.add(new Answer("yes", QUESTION));
+        answerList.add(new Answer("no", QUESTION));
+        QUESTION_REQUEST = new QuestionRequest("content", answerList, 10, 2, survey.getId());
     }
 
     @Test
     void findQuestionsById() {
-        Survey survey = surveyRepository.save(new Survey("title", "purpose", Instant.now(), Instant.now().plusSeconds(100L), "pw"));
+        Survey survey1 = surveyRepository.save(new Survey("title1", "purpose1", Instant.now(), Instant.now().plusSeconds(100L), "pw"));
         for (int i = 1; i <= 3; i++) {
-            questionRepository.save(new Question("question", "yes", "no", 10, i, survey));
+            Question question = new Question("question123", 100, i, survey1);
+            List<Answer> answerList = List.of(new Answer("yes", question), new Answer("no", question));
+            question.addAnswer(answerList);
+            questionRepository.save(question);
+//            answerRepository.saveAll(answerList);
         }
 
-        List<Question> questions = questionService.findQuestionsById(survey.getId());
-        System.out.println(questions);
+        List<QuestionResponse> questions = questionService.findQuestionsById(survey1.getId());
+        System.out.println(questions.get(0).getAnswerQuestion());
         assertThat(questions.size()).isEqualTo(3);
     }
+
+    @Test
+    void findOneQuestionById() {
+        Survey survey = surveyRepository.save(new Survey("title1", "purpose1", Instant.now(), Instant.now().plusSeconds(100L), "pw"));
+        Question question = questionRepository.save(new Question("question123", 100, 1, survey));
+        Long questionid = questionService.createQuestion(new QuestionRequest(question.getQuestionContent(), List.of(new Answer("yes", question), new Answer("no", question)), question.getTime(), question.getQuestionOrder(), survey.getId()));
+
+        QuestionResponse response = questionService.findOneQuestions(survey.getId(), questionid);
+        assertThat(response.getQuestionContent()).isEqualTo(question.getQuestionContent());
+//        System.out.println(questions.get(0).getAnswerQuestion());
+//        assertThat(questions.size()).isEqualTo(3);
+    }
+
 
     @Test
     void createQuestionTest() {
@@ -61,7 +88,45 @@ class QuestionServiceTest {
     }
 
     @Test
+    void createQuestionListTest() {
+        List<QuestionRequest> questionRequestList = new ArrayList<>();
+        questionRequestList.add(QUESTION_REQUEST);
+        questionRequestList.add(QUESTION_REQUEST);
+        questionRequestList.add(QUESTION_REQUEST);
+        List<Long> questionIds = questionService.createQuestions(questionRequestList);
+        List<Question> findedQuestion = questionRepository.findAllById(questionIds);
+        assertThat(findedQuestion.size()).isEqualTo(questionRequestList.size());
+    }
+
+    @Test
+    void sentimentQuestionTest(){
+        SentimentQuestionResponse sentimentList = questionService.getSentimentList(QUESTION_REQUEST);
+        System.out.println(sentimentList.toString());
+    }
+
+    @Test
+    void findAllQuestionTests() {
+
+        for (int i = 0; i < 3; i++) {
+            Question question = questionRepository.save(new Question(QUESTION_REQUEST.getQuestionContent(), QUESTION_REQUEST.getTime(), QUESTION_REQUEST.getQuestionOrder(), survey));
+            answerRepository.saveAll(List.of(new Answer("yes", question), new Answer("no", question)));
+        }
+
+        // when
+        List<QuestionResponse> findedQuestion = questionService.findQuestionsById(survey.getId());
+
+        List<Answer> all = answerRepository.findAll();
+
+
+        List<String> AnswerList = findedQuestion.get(1).getAnswerQuestion();
+        System.out.println(AnswerList);
+
+    }
+
+    @Test
     void updateQuestionTest() {
+        Long questionId = questionService.createQuestion(QUESTION_REQUEST);
+        Question questionSample = questionRepository.findById(questionId).orElseThrow(IllegalArgumentException::new);
         String updatecontent = "updated";
         questionService.updateMainQuestion(updatecontent, questionSample.getId());
         Question updatedQuestion = questionRepository.findById(questionSample.getId()).orElseThrow(IllegalArgumentException::new);
@@ -70,8 +135,15 @@ class QuestionServiceTest {
 
     @Test
     void deleteQuestionTest() {
-        Long questionId = questionRepository.save(QUESTION).getId();
+        Long questionId = questionService.createQuestion(new QuestionRequest("content", new ArrayList<>(), 1, 1, survey.getId()));
         questionService.deleteMainQuestion(questionId);
         assertThatThrownBy(() -> questionRepository.findById(questionId).orElseThrow(IllegalArgumentException::new)).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @AfterEach
+    void tearDown() {
+        answerRepository.deleteAllInBatch();
+        questionRepository.deleteAllInBatch();
+        surveyRepository.deleteAllInBatch();
     }
 }
