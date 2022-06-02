@@ -1,6 +1,8 @@
 package com.surbey.question;
 
+import com.surbey.answer.AnswerRepository;
 import com.surbey.question.dto.QuestionRequest;
+import com.surbey.question.dto.QuestionResponse;
 import com.surbey.survey.Survey;
 import com.surbey.survey.SurveyRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
@@ -17,36 +20,47 @@ public class QuestionService {
 
     private final QuestionRepository questionRepository;
     private final SurveyRepository surveyRepository;
+    private final AnswerRepository answerRepository;
 
 
     @Transactional(readOnly = true)
-    public List<Question> findQuestionsById(UUID uuid) {
+    public List<QuestionResponse> findQuestionsById(UUID uuid) {
         List<Question> questions = questionRepository.findQuestionBySurveyId(uuid);
-        return questions;
+//        List<Question> questions = questionRepository.findAll();
+        return QuestionResponse.listOf(questions);
     }
 
     @Transactional(readOnly = true)
-    public Question findOneQuestions(UUID uuid, Long questionId) {
+    public QuestionResponse findOneQuestions(UUID uuid, Long questionId) {
         Question question = questionRepository.findQuestionBySurveyIdAndId(uuid, questionId).orElseThrow(IllegalArgumentException::new);
-        return question;
+        return QuestionResponse.of(question);
     }
 
     @Transactional
     public Long createQuestion(QuestionRequest request) {
         Survey survey = surveyRepository.findById(request.getSurveyId()).orElseThrow(IllegalArgumentException::new);
-        Long questionId = questionRepository.save(new Question(request.getQuestionContent(), request.getLeftQuestion(), request.getRightQuestion(),
-                request.getTime(), request.getQuestionOrder(), survey)).getId();
-        return questionId;
+        Question question = new Question(request.getQuestionContent(), request.getTime(), request.getQuestionOrder(), survey);
+        question.addAnswer(request.getAnswer());
+        Question savedQuestion = questionRepository.save(question);
+//        answerRepository.saveAll(request.getAnswer());
+
+        return savedQuestion.getId();
     }
 
     @Transactional
     public List<Long> createQuestions(List<QuestionRequest> requests) {
         Survey survey = surveyRepository.findById(requests.get(0).getSurveyId()).orElseThrow(IllegalArgumentException::new);
-        List<Long> resultsId = requests.stream()
-                .map(s -> questionRepository.save(new Question(s.getQuestionContent(), s.getLeftQuestion(), s.getRightQuestion(),
-                        s.getTime(), s.getQuestionOrder(), survey)).getId())
+
+        List<Question> questions = requests.stream()
+                .map(s -> new Question(s.getQuestionContent(), s.getTime(), s.getQuestionOrder(), survey))
                 .collect(Collectors.toList());
-        return resultsId;
+
+        IntStream.range(0, requests.size())
+                .forEach(i -> questions.get(i).addAnswer(requests.get(i).getAnswer()));
+
+        List<Question> savedQuestions = questions.stream().map(s -> questionRepository.save(s)).collect(Collectors.toList());
+
+        return savedQuestions.stream().map(Question::getId).collect(Collectors.toList());
     }
 
     @Transactional
