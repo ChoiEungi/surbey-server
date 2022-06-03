@@ -36,7 +36,7 @@ class QuestionServiceTest {
     private AnswerRepository answerRepository;
 
     public QuestionRequest QUESTION_REQUEST;
-    public List<Answer> answerList = new ArrayList<>();
+    public List<String> answerList = new ArrayList<>();
     private Survey survey;
 
     public static final Survey SURVEY = new Survey("title", "purpose", Instant.now(), Instant.now().plusSeconds(100L), "pw");
@@ -46,9 +46,9 @@ class QuestionServiceTest {
     @BeforeEach
     void setup() {
         survey = surveyRepository.save(SURVEY);
-        answerList.add(new Answer("yes", QUESTION));
-        answerList.add(new Answer("no", QUESTION));
-        QUESTION_REQUEST = new QuestionRequest("content", answerList, 10, 2, survey.getId());
+        answerList.add("yes");
+        answerList.add("no");
+        QUESTION_REQUEST = new QuestionRequest("content", answerList, 10, 2);
     }
 
     @Test
@@ -63,7 +63,7 @@ class QuestionServiceTest {
         }
 
         List<QuestionResponse> questions = questionService.findQuestionsById(survey1.getId());
-        System.out.println(questions.get(0).getAnswerQuestion());
+        System.out.println(questions.get(0).getAnswer());
         assertThat(questions.size()).isEqualTo(3);
     }
 
@@ -71,10 +71,10 @@ class QuestionServiceTest {
     void findOneQuestionById() {
         Survey survey = surveyRepository.save(new Survey("title1", "purpose1", Instant.now(), Instant.now().plusSeconds(100L), "pw"));
         Question question = questionRepository.save(new Question("question123", 100, 1, survey));
-        Long questionid = questionService.createQuestion(new QuestionRequest(question.getQuestionContent(), List.of(new Answer("yes", question), new Answer("no", question)), question.getTime(), question.getQuestionOrder(), survey.getId()));
+        Long questionid = questionService.createQuestion(survey.getId(), new QuestionRequest(question.getQuestionContent(), List.of("yes", "no"), question.getTime(), question.getQuestionOrder()));
 
         QuestionResponse response = questionService.findOneQuestions(survey.getId(), questionid);
-        assertThat(response.getQuestionContent()).isEqualTo(question.getQuestionContent());
+        assertThat(response.getText()).isEqualTo(question.getQuestionContent());
 //        System.out.println(questions.get(0).getAnswerQuestion());
 //        assertThat(questions.size()).isEqualTo(3);
     }
@@ -82,7 +82,7 @@ class QuestionServiceTest {
 
     @Test
     void createQuestionTest() {
-        Long questionId = questionService.createQuestion(QUESTION_REQUEST);
+        Long questionId = questionService.createQuestion(survey.getId(), QUESTION_REQUEST);
         Question findedQuestion = questionRepository.findById(questionId).orElseThrow(IllegalArgumentException::new);
         assertThat(findedQuestion.getId()).isEqualTo(questionId);
     }
@@ -93,14 +93,14 @@ class QuestionServiceTest {
         questionRequestList.add(QUESTION_REQUEST);
         questionRequestList.add(QUESTION_REQUEST);
         questionRequestList.add(QUESTION_REQUEST);
-        List<Long> questionIds = questionService.createQuestions(questionRequestList);
+        List<Long> questionIds = questionService.createQuestions(survey.getId(), questionRequestList);
         List<Question> findedQuestion = questionRepository.findAllById(questionIds);
         assertThat(findedQuestion.size()).isEqualTo(questionRequestList.size());
     }
 
     @Test
-    void sentimentQuestionTest(){
-        SentimentQuestionResponse sentimentList = questionService.getSentimentList(QUESTION_REQUEST);
+    void sentimentQuestionTest() {
+        SentimentQuestionResponse sentimentList = questionService.getSentimentResponse(QUESTION_REQUEST);
         System.out.println(sentimentList.toString());
     }
 
@@ -118,14 +118,14 @@ class QuestionServiceTest {
         List<Answer> all = answerRepository.findAll();
 
 
-        List<String> AnswerList = findedQuestion.get(1).getAnswerQuestion();
+        List<String> AnswerList = findedQuestion.get(1).getAnswer();
         System.out.println(AnswerList);
 
     }
 
     @Test
     void updateQuestionTest() {
-        Long questionId = questionService.createQuestion(QUESTION_REQUEST);
+        Long questionId = questionService.createQuestion(survey.getId(), QUESTION_REQUEST);
         Question questionSample = questionRepository.findById(questionId).orElseThrow(IllegalArgumentException::new);
         String updatecontent = "updated";
         questionService.updateMainQuestion(updatecontent, questionSample.getId());
@@ -135,7 +135,7 @@ class QuestionServiceTest {
 
     @Test
     void deleteQuestionTest() {
-        Long questionId = questionService.createQuestion(new QuestionRequest("content", new ArrayList<>(), 1, 1, survey.getId()));
+        Long questionId = questionService.createQuestion(survey.getId(), new QuestionRequest("content", new ArrayList<>(), 1, 1));
         questionService.deleteMainQuestion(questionId);
         assertThatThrownBy(() -> questionRepository.findById(questionId).orElseThrow(IllegalArgumentException::new)).isInstanceOf(IllegalArgumentException.class);
     }

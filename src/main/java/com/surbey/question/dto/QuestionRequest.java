@@ -1,20 +1,13 @@
 package com.surbey.question.dto;
 
-import com.surbey.answer.Answer;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Data;
 
 import java.util.List;
-import java.util.UUID;
 
-@AllArgsConstructor
-@Getter
-@NoArgsConstructor
+@Data
 public class QuestionRequest {
-    private String questionContent;
-    private List<Answer> answer;
-    private int time;
-    private int questionOrder;
-    private UUID surveyId;
+    private final String questionContent;
+    private final List<String> answerDescription;
+    private final int time;
+    private final int questionOrder;
 }

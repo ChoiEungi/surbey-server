@@ -19,13 +19,13 @@ public class QuestionController {
 
     @PostMapping("survey/{id}/questions")
     public ResponseEntity<Void> createQuestionLists(@PathVariable UUID id, @RequestBody List<QuestionRequest> questionListRequest) {
-        List<Long> questions = questionService.createQuestions(questionListRequest);
+        List<Long> questions = questionService.createQuestions(id, questionListRequest);
         return ResponseEntity.created(URI.create("/survey/" + id + "/questions")).build();
     }
 
     @PostMapping("survey/{id}/question")
     public ResponseEntity<Void> createQuestion(@PathVariable UUID id, @RequestBody QuestionRequest questionRequest) {
-        Long questionId = questionService.createQuestion(questionRequest);
+        Long questionId = questionService.createQuestion(id, questionRequest);
         return ResponseEntity.created(URI.create("/survey/" + id + "/questions/" + questionId)).build();
     }
 
@@ -42,8 +42,14 @@ public class QuestionController {
     }
 
     @PutMapping("/survey/{id}/questions/analysis/{questionId}")
-    public ResponseEntity<SentimentQuestionResponse> retrieveSentimentQuestion(@PathVariable UUID id, @PathVariable Long questionId, @RequestBody QuestionRequest questionRequest){
-        SentimentQuestionResponse sentimentQuestionResponse = questionService.getSentimentList(questionRequest);
+    public ResponseEntity<SentimentQuestionResponse> retrieveSentimentQuestion(@PathVariable UUID id, @PathVariable Long questionId, @RequestBody QuestionRequest questionRequest) {
+        SentimentQuestionResponse sentimentQuestionResponse = questionService.getSentimentResponse(questionRequest);
+        return ResponseEntity.ok(sentimentQuestionResponse);
+    }
+
+    @PutMapping("/survey/{id}/questions/analysis")
+    public ResponseEntity<List<SentimentQuestionResponse>> retrieveSentimentQuestionList(@PathVariable UUID id, @RequestBody List<QuestionRequest> questionRequestList) {
+        List<SentimentQuestionResponse> sentimentQuestionResponse = questionService.getSentimentResponseList(questionRequestList);
         return ResponseEntity.ok(sentimentQuestionResponse);
     }
 

@@ -13,13 +13,13 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class QuestionResponse {
 
-    private String questionContent;
+    private String text;
     private int time;
     private int questionOrder;
-    private final List<String> answerQuestion = new ArrayList<>();
+    private final List<String> answer = new ArrayList<>();
 
-    public QuestionResponse(String questionContent, int time, int questionOrder) {
-        this.questionContent = questionContent;
+    public QuestionResponse(String text, int time, int questionOrder) {
+        this.text = text;
         this.time = time;
         this.questionOrder = questionOrder;
     }
@@ -35,7 +35,7 @@ public class QuestionResponse {
         List<String> answerList = question.getAnswerList().stream()
                 .map(s -> s.getAnswerQuestion())
                 .collect(Collectors.toList());
-        questionResponse.getAnswerQuestion().addAll(answerList);
+        questionResponse.getAnswer().addAll(answerList);
         return questionResponse;
     }
 }
