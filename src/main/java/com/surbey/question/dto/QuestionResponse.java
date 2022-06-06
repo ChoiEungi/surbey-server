@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class QuestionResponse {
-
     private String text;
     private int time;
     private int questionOrder;

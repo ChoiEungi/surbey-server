@@ -21,8 +21,8 @@ public class Answer {
 
     private String answerQuestion;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private final List<Result> answerResultList = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Result> results = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Question question;
@@ -37,6 +37,10 @@ public class Answer {
         this.question = question;
     }
 
+
+    public Long getAnswerId(){
+        return this.answerId;
+    }
     public String getAnswerQuestion() {
         return answerQuestion;
     }
@@ -44,6 +48,11 @@ public class Answer {
     public void setQuestion(Question question) {
         this.question = question;
     }
+
+    public void addResult(){
+//        this.results.add(new Result(this.answerId));
+    }
+
 
 
 }
