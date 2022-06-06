@@ -49,7 +49,6 @@ public class Question {
     }
 
     public void addAnswer(List<Answer> answerList) {
-        answerList.forEach(s -> s.setQuestion(this));
         this.answerList.addAll(answerList);
     }
 }

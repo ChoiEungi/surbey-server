@@ -11,7 +11,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 public class AnswerTest {
@@ -24,11 +27,15 @@ public class AnswerTest {
     void answerBulkInsertTest(){
         Survey survey = surveyRepository.save(new Survey("지방 선거 관련 설문", "2022 6월 1일에 시행되는 지방선거 관련 설문입니다.", Instant.now(), Instant.now().plusSeconds(100L), "pw"));
         Question question1 = new Question("윤석열 정부에 대해 긍정적이십니까?", 5, 1, survey);
-        List<Answer> answerList = List.of(new Answer("yes", question1), new Answer("no", question1));
+
+        List<Answer> answerList = new ArrayList<>();
+        for (int i=0; i<100; i++){
+            Answer answer = new Answer("ans", question1);
+            answerList.add(answer);
+        }
+
         question1.addAnswer(answerList);
         questionRepository.save(question1);
         answerRepository.saveAll(answerList);
     }
-
-
 }
