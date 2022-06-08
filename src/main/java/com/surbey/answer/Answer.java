@@ -1,6 +1,5 @@
 package com.surbey.answer;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.surbey.question.Question;
 import com.surbey.result.Result;
 import lombok.AccessLevel;
@@ -13,6 +12,7 @@ import java.util.List;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class Answer {
 
     @Id
@@ -43,6 +43,9 @@ public class Answer {
     }
     public String getAnswerQuestion() {
         return answerQuestion;
+    }
+    public Long getQuestionId() {
+        return this.question.getId();
     }
 
     public void setQuestion(Question question) {

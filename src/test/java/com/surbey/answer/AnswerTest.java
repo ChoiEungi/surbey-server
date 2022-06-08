@@ -2,13 +2,12 @@ package com.surbey.answer;
 
 import com.surbey.question.Question;
 import com.surbey.question.QuestionRepository;
-import com.surbey.question.QuestionResultService;
 import com.surbey.survey.Survey;
 import com.surbey.survey.SurveyRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -16,7 +15,8 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest
+@SpringBootTest
+@ActiveProfiles("test")
 public class AnswerTest {
 
     @Autowired private SurveyRepository surveyRepository;
@@ -29,13 +29,15 @@ public class AnswerTest {
         Question question1 = new Question("윤석열 정부에 대해 긍정적이십니까?", 5, 1, survey);
 
         List<Answer> answerList = new ArrayList<>();
-        for (int i=0; i<100; i++){
-            Answer answer = new Answer("ans", question1);
+        for (int i=0; i<10000; i++){
+            Answer answer = new Answer("ans"+i, question1);
             answerList.add(answer);
         }
 
         question1.addAnswer(answerList);
         questionRepository.save(question1);
-        answerRepository.saveAll(answerList);
+//        answerRepository.saveAll(answerList);
+        answerRepository.answerBatchInsert(answerList);
+
     }
 }
