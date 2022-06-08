@@ -71,7 +71,7 @@ class QuestionServiceTest {
     void findOneQuestionById() {
         Survey survey = surveyRepository.save(new Survey("title1", "purpose1", Instant.now(), Instant.now().plusSeconds(100L), "pw"));
         Question question = questionRepository.save(new Question("question123", 100, 1, survey));
-        Long questionid = questionService.createQuestion(survey.getId(), new QuestionRequest(question.getQuestionContent(), List.of("yes", "no"), question.getTime(), question.getQuestionOrder()));
+        Long questionid = questionService.createQuestion(survey.getId(), new QuestionRequest(question.getQuestionContent(), List.of("yes", "no"), question.getSurveyTime(), question.getQuestionOrder()));
 
         QuestionResponse response = questionService.findOneQuestions(survey.getId(), questionid);
         assertThat(response.getText()).isEqualTo(question.getQuestionContent());

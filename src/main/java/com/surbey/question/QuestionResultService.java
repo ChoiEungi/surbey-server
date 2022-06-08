@@ -3,7 +3,6 @@ package com.surbey.question;
 import com.surbey.answer.Answer;
 import com.surbey.answer.AnswerRepository;
 import com.surbey.result.ResultRequest;
-import com.surbey.survey.Survey;
 import com.surbey.survey.SurveyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

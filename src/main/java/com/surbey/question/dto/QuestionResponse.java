@@ -30,7 +30,7 @@ public class QuestionResponse {
     }
 
     public static QuestionResponse of(Question question) {
-        QuestionResponse questionResponse = new QuestionResponse(question.getQuestionContent(), question.getQuestionOrder(), question.getTime());
+        QuestionResponse questionResponse = new QuestionResponse(question.getQuestionContent(), question.getQuestionOrder(), question.getSurveyTime());
         List<String> answerList = question.getAnswerList().stream()
                 .map(s -> s.getAnswerQuestion())
                 .collect(Collectors.toList());
