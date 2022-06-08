@@ -22,7 +22,7 @@ public class Question {
     @Lob
     private String questionContent;
 
-    private int time;
+    private int surveyTime;
 
     private int questionOrder;
 
@@ -32,14 +32,14 @@ public class Question {
     @ManyToOne(fetch = FetchType.LAZY)
     private Survey survey;
 
-    public Question(String questionContent, int time, int questionOrder, Survey survey) {
-        this(null, questionContent, time, questionOrder, survey);
+    public Question(String questionContent, int surveyTime, int questionOrder, Survey survey) {
+        this(null, questionContent, surveyTime, questionOrder, survey);
     }
 
-    private Question(Long id, String questionContent, int time, int questionOrder, Survey survey) {
+    private Question(Long id, String questionContent, int surveyTime, int questionOrder, Survey survey) {
         this.id = id;
         this.questionContent = questionContent;
-        this.time = time;
+        this.surveyTime = surveyTime;
         this.questionOrder = questionOrder;
         this.survey = survey;
     }
@@ -49,7 +49,6 @@ public class Question {
     }
 
     public void addAnswer(List<Answer> answerList) {
-        answerList.forEach(s -> s.setQuestion(this));
         this.answerList.addAll(answerList);
     }
 }

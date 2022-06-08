@@ -1,17 +1,12 @@
 package com.surbey.result;
 
 import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter
 public class Result {
 
     @Id
@@ -19,4 +14,14 @@ public class Result {
     private Long id;
 
     private Long answerId;
+
+    public Result(Long answerId) {
+        this(null, answerId);
+    }
+
+    private Result(Long id, Long answerId) {
+        this.id = id;
+        this.answerId = answerId;
+    }
+
 }

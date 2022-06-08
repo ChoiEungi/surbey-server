@@ -1,6 +1,8 @@
 package com.surbey.question;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,4 +15,5 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     List<Question> findQuestionBySurveyId(UUID uuid);
 
     Optional<Question> findQuestionBySurveyIdAndId(UUID uuid, Long id);
+
 }

@@ -36,7 +36,7 @@ public class SentimentVerifierImpl implements SentimentVerifier {
         return new Document(sentiment, new Confidence(negative, positive, neutral));
     }
 
-    private JsonNode getSentiment(String content){
+    private JsonNode getSentiment(String content) {
         HttpResponse<JsonNode> jsonNodeHttpResponse = Unirest.post(url)
                 .header("X-NCP-APIGW-API-KEY-ID", apiKeyId)
                 .header("X-NCP-APIGW-API-KEY", apiKey)
@@ -46,5 +46,4 @@ public class SentimentVerifierImpl implements SentimentVerifier {
 
         return jsonNodeHttpResponse.getBody();
     }
-
 }

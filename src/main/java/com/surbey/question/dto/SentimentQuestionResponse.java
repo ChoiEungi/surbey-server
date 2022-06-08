@@ -13,7 +13,6 @@ import java.util.stream.IntStream;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SentimentQuestionResponse {
-
     private String questionContent;
     private int time;
     private int questionOrder;

@@ -1,0 +1,16 @@
+version: "3"
+services:
+  db:
+    image: mysql:8.0
+    container_name: dev-surbey
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: "surbey"
+      MYSQL_ROOT_PASSWORD: "gist1234!"
+      MYSQL_USER: "admin"
+      MYSQL_PASSWORD: "gist1234!"
+      TZ: "Asia/Seoul"
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
