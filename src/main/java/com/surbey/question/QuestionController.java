@@ -56,7 +56,7 @@ public class QuestionController {
     }
 
     @PostMapping("/survey/{id}/results")
-    public ResponseEntity<Void> submitResult(@PathVariable UUID id, @RequestBody List<ResultRequest> request) {
+    public ResponseEntity<Void> submitResult(@PathVariable UUID id, @RequestBody ResultRequest request) {
         questionResultService.answerTheQuestion(request);
         return ResponseEntity.created(URI.create(String.format("/survey/%s/results", id))).build();
     }

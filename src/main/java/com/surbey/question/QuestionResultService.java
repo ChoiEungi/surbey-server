@@ -30,8 +30,8 @@ public class QuestionResultService {
 
 
     @Transactional
-    public void answerTheQuestion(List<ResultRequest> request) {
-        List<Answer> answerList = answerRepository.findAllById(request.stream().map(s -> s.getAnswerId()).collect(Collectors.toList()));
+    public void answerTheQuestion(ResultRequest request) {
+        List<Answer> answerList = answerRepository.findAllById(request.getAnswerIdList());
         answerList.forEach(s -> s.addResult());
     }
 }
