@@ -55,15 +55,14 @@ public class QuestionController {
         return ResponseEntity.ok(sentimentQuestionResponse);
     }
 
-    @PostMapping("/survey/{id}/answers")
-    public ResponseEntity<Void> submitResult(@PathVariable UUID id, @RequestBody List<ResultRequest> request) {
+    @PostMapping("/survey/{id}/results")
+    public ResponseEntity<Void> submitResult(@PathVariable UUID id, @RequestBody ResultRequest request) {
         questionResultService.answerTheQuestion(request);
-        return ResponseEntity.created(URI.create(String.format("/survey/%s/answers", id))).build();
+        return ResponseEntity.created(URI.create(String.format("/survey/%s/results", id))).build();
     }
 
-    @GetMapping("/survey/{id}/answers")
-    public void submitResult(@PathVariable UUID id) {
-        questionResultService.findResultBySurvey();
+    @GetMapping("/survey/{id}/results")
+    public void retrieveResults(@PathVariable UUID id) {
+//        questionResultService.findResultBySurvey();
     }
-
 }
