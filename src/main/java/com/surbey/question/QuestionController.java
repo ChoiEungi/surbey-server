@@ -3,6 +3,7 @@ package com.surbey.question;
 import com.surbey.question.dto.QuestionRequest;
 import com.surbey.question.dto.QuestionResponse;
 import com.surbey.question.dto.SentimentQuestionResponse;
+import com.surbey.result.ResultRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import java.util.UUID;
 public class QuestionController {
 
     private final QuestionService questionService;
+    private final QuestionResultService questionResultService;
 
     @PostMapping("survey/{id}/questions")
     public ResponseEntity<Void> createQuestionLists(@PathVariable UUID id, @RequestBody List<QuestionRequest> questionListRequest) {
@@ -53,5 +55,15 @@ public class QuestionController {
         return ResponseEntity.ok(sentimentQuestionResponse);
     }
 
+    @PostMapping("/survey/{id}/answers")
+    public ResponseEntity<Void> submitResult(@PathVariable UUID id, @RequestBody List<ResultRequest> request) {
+        questionResultService.answerTheQuestion(request);
+        return ResponseEntity.created(URI.create(String.format("/survey/%s/answers", id))).build();
+    }
+
+    @GetMapping("/survey/{id}/answers")
+    public void submitResult(@PathVariable UUID id) {
+        questionResultService.findResultBySurvey();
+    }
 
 }

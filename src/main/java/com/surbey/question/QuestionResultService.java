@@ -19,13 +19,13 @@ public class QuestionResultService {
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
 
-    public void findResultBySurvey(){
+    public void findResultBySurvey() {
 //        surveyRepository.
     }
 
 
     @Transactional
-    public void answerTheQuestion(List<ResultRequest> request){
+    public void answerTheQuestion(List<ResultRequest> request) {
         List<Answer> answerList = answerRepository.findAllById(request.stream().map(s -> s.getAnswerId()).collect(Collectors.toList()));
         answerList.forEach(s -> s.addResult());
     }

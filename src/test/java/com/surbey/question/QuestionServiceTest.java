@@ -118,8 +118,8 @@ class QuestionServiceTest {
         List<Answer> all = answerRepository.findAll();
 
 
-        List<String> AnswerList = findedQuestion.get(1).getAnswer();
-        System.out.println(AnswerList);
+//        List<String> AnswerList = findedQuestion.get(1).getAnswer();
+//        System.out.println(AnswerList);
 
     }
 

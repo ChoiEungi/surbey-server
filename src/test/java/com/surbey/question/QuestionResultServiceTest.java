@@ -42,7 +42,7 @@ class QuestionResultServiceTest {
         answerRepository.saveAll(answerList2);
 
         List<ResultRequest> resultRequestList = answerRepository.findAll().
-                stream().filter(s -> s.getAnswerId().intValue() < 2)
+                stream().filter(s -> s.getAnswerId().intValue() < 4)
                 .map(s -> new ResultRequest(s.getAnswerId()))
                 .collect(Collectors.toList());
 

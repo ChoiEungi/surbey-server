@@ -1,17 +1,17 @@
 spring:
   config:
     import: application-private.yml
-#  datasource:
-#    url: jdbc:h2:mem:testdb
-#    driverClassName: org.h2.Driver
-#    username: sa
-#    password:
+  #  datasource:
+  #    url: jdbc:h2:mem:testdb
+  #    driverClassName: org.h2.Driver
+  #    username: sa
+  #    password:
 
 
   #  h2:
-#    console:
-#      enabled: true
-#
+  #    console:
+  #      enabled: true
+  #
   jpa:
     show-sql: true
     properties:
@@ -23,10 +23,6 @@ spring:
     level:
       org:
         hibernate: trace
-
-
-
-
 
 
 ---
