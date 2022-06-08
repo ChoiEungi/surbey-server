@@ -40,7 +40,7 @@ public class DataLoader implements CommandLineRunner {
 
         Survey courseSurvey = surveyRepository.save(new Survey("수강평 관련 설문", "2022년도 1학기 GIST 강의평가 관련 설문입니다.", Instant.now(), Instant.now().plusSeconds(100L), "pw"));
 
-        Question courseQuestion = new Question("강의 전반적인 만족도는 높으셨나요?", 1, 1, survey);
+        Question courseQuestion = new Question("강의 전반적인 만족도는 높으셨나요?", 1, 1, courseSurvey);
         List<Answer> courseAnswerList = List.of(new Answer("yes", courseQuestion), new Answer("no", courseQuestion));
         question1.addAnswer(courseAnswerList);
         questionRepository.save(courseQuestion);

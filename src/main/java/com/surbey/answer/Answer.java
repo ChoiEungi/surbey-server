@@ -22,7 +22,7 @@ public class Answer {
     private String answerQuestion;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private List<Result> results = new ArrayList<>();
+    private final List<Result> results = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Question question;
@@ -38,12 +38,14 @@ public class Answer {
     }
 
 
-    public Long getAnswerId(){
+    public Long getAnswerId() {
         return this.answerId;
     }
+
     public String getAnswerQuestion() {
         return answerQuestion;
     }
+
     public Long getQuestionId() {
         return this.question.getId();
     }
@@ -52,10 +54,9 @@ public class Answer {
         this.question = question;
     }
 
-    public void addResult(){
-//        this.results.add(new Result(this.answerId));
+    public void addResult() {
+        this.results.add(new Result(this.answerId));
     }
-
 
 
 }

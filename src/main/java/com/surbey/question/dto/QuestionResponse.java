@@ -1,5 +1,6 @@
 package com.surbey.question.dto;
 
+import com.surbey.answer.dto.AnswerResponse;
 import com.surbey.question.Question;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -15,7 +16,7 @@ public class QuestionResponse {
     private String text;
     private int time;
     private int questionOrder;
-    private final List<String> answer = new ArrayList<>();
+    private final List<AnswerResponse> answer = new ArrayList<>();
 
     public QuestionResponse(String text, int time, int questionOrder) {
         this.text = text;
@@ -31,10 +32,7 @@ public class QuestionResponse {
 
     public static QuestionResponse of(Question question) {
         QuestionResponse questionResponse = new QuestionResponse(question.getQuestionContent(), question.getQuestionOrder(), question.getSurveyTime());
-        List<String> answerList = question.getAnswerList().stream()
-                .map(s -> s.getAnswerQuestion())
-                .collect(Collectors.toList());
-        questionResponse.getAnswer().addAll(answerList);
+        questionResponse.getAnswer().addAll(AnswerResponse.listOf(question.getAnswerList()));
         return questionResponse;
     }
 }
