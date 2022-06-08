@@ -41,11 +41,12 @@ class QuestionResultServiceTest {
         questionRepository.save(question2);
         answerRepository.saveAll(answerList2);
 
-        List<ResultRequest> resultRequestList = answerRepository.findAll().
+        ResultRequest request = new ResultRequest();
+        request.getAnswerIdList().addAll(answerRepository.findAll().
                 stream().filter(s -> s.getAnswerId().intValue() < 4)
-                .map(s -> new ResultRequest(s.getAnswerId()))
-                .collect(Collectors.toList());
+                .map(s -> s.getAnswerId())
+                .collect(Collectors.toList()));
 
-        questionResultService.answerTheQuestion(resultRequestList);
+        questionResultService.answerTheQuestion(request);
     }
 }
